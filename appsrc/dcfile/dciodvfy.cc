@@ -1,4 +1,4 @@
-static const char *CopyrightIdentifier(void) { return "@(#)dciodvfy.cc Copyright (c) 1993-2021, David A. Clunie DBA PixelMed Publishing. All rights reserved."; }
+static const char *CopyrightIdentifier(void) { return "@(#)dciodvfy.cc Copyright (c) 1993-2022, David A. Clunie DBA PixelMed Publishing. All rights reserved."; }
 #include "attrmxls.h"
 #include "mesgtext.h"
 #include "dcopt.h"
@@ -2741,6 +2741,178 @@ checkConsistencyOfTiledImageGeometry(AttributeList &list,bool verbose,bool newfo
 	return success;
 }
 
+static bool
+checkUIDsAreNotReusedForDifferentEntities(AttributeList &list,bool verbose,bool newformat,TextOutputStream &log) {
+//cerr << "checkUIDsAreNotReusedForDifferentEntities():" << endl;
+	bool success=true;
+
+	Attribute *aSOPInstanceUID=list[TagFromName(SOPInstanceUID)];
+	Attribute *aSeriesInstanceUID=list[TagFromName(SeriesInstanceUID)];
+	Attribute *aStudyInstanceUID=list[TagFromName(StudyInstanceUID)];
+	Attribute *aFrameOfReferenceUID=list[TagFromName(FrameOfReferenceUID)];
+
+	char *vSOPInstanceUID=AttributeValue(aSOPInstanceUID,"");
+	char *vSeriesInstanceUID=AttributeValue(aSeriesInstanceUID,"");
+	char *vStudyInstanceUID=AttributeValue(aStudyInstanceUID,"");
+	char *vFrameOfReferenceUID=AttributeValue(aFrameOfReferenceUID,"");
+
+	if (strlen(vSOPInstanceUID) > 0) {
+		if (strcmp(vSOPInstanceUID,vSeriesInstanceUID) == 0) {
+			if (newformat) {
+				log << EMsgDCF(MMsgDC(SOPInstanceUIDHasSameValueAsSeriesInstanceUID),aSOPInstanceUID)
+					<< " = <" << vSOPInstanceUID << ">"
+					<< endl;
+			}
+			else {
+				log << EMsgDC(SOPInstanceUIDHasSameValueAsSeriesInstanceUID)
+					<< " <" << vSOPInstanceUID << ">"
+					<< endl;
+			}
+		}
+		if (strcmp(vSOPInstanceUID,vStudyInstanceUID) == 0) {
+			if (newformat) {
+				log << EMsgDCF(MMsgDC(SOPInstanceUIDHasSameValueAsStudyInstanceUID),aSOPInstanceUID)
+					<< " = <" << vSOPInstanceUID << ">"
+					<< endl;
+			}
+			else {
+				log << EMsgDC(SOPInstanceUIDHasSameValueAsStudyInstanceUID)
+					<< " <" << vSOPInstanceUID << ">"
+					<< endl;
+			}
+		}
+		if (strcmp(vSOPInstanceUID,vFrameOfReferenceUID) == 0) {
+			if (newformat) {
+				log << EMsgDCF(MMsgDC(SOPInstanceUIDHasSameValueAsFrameOfReferenceUID),aSOPInstanceUID)
+					<< " = <" << vSOPInstanceUID << ">"
+					<< endl;
+			}
+			else {
+				log << EMsgDC(SOPInstanceUIDHasSameValueAsFrameOfReferenceUID)
+					<< " <" << vSOPInstanceUID << ">"
+					<< endl;
+			}
+		}
+	}
+
+	if (strlen(vSeriesInstanceUID) > 0) {
+		if (strcmp(vSeriesInstanceUID,vStudyInstanceUID) == 0) {
+			if (newformat) {
+				log << EMsgDCF(MMsgDC(SeriesInstanceUIDHasSameValueAsStudyInstanceUID),aSeriesInstanceUID)
+					<< " = <" << vSeriesInstanceUID << ">"
+					<< endl;
+			}
+			else {
+				log << EMsgDC(SeriesInstanceUIDHasSameValueAsStudyInstanceUID)
+					<< " <" << vSeriesInstanceUID << ">"
+					<< endl;
+			}
+		}
+		if (strcmp(vSeriesInstanceUID,vFrameOfReferenceUID) == 0) {
+			if (newformat) {
+				log << EMsgDCF(MMsgDC(SeriesInstanceUIDHasSameValueAsFrameOfReferenceUID),aSeriesInstanceUID)
+					<< " = <" << vSeriesInstanceUID << ">"
+					<< endl;
+			}
+			else {
+				log << EMsgDC(SeriesInstanceUIDHasSameValueAsFrameOfReferenceUID)
+					<< " <" << vSeriesInstanceUID << ">"
+					<< endl;
+			}
+		}
+	}
+
+	if (strlen(vStudyInstanceUID) > 0) {
+		if (strcmp(vStudyInstanceUID,vFrameOfReferenceUID) == 0) {
+			if (newformat) {
+				log << EMsgDCF(MMsgDC(StudyInstanceUIDHasSameValueAsFrameOfReferenceUID),aStudyInstanceUID)
+					<< " = <" << vStudyInstanceUID << ">"
+					<< endl;
+			}
+			else {
+				log << EMsgDC(StudyInstanceUIDHasSameValueAsFrameOfReferenceUID)
+					<< " <" << vStudyInstanceUID << ">"
+					<< endl;
+			}
+		}
+	}
+	
+	{
+			Attribute *aSpecimenDescriptionSequence = list[TagFromName(SpecimenDescriptionSequence)];
+			if (aSpecimenDescriptionSequence && aSpecimenDescriptionSequence->isSequence()) {
+				AttributeList **aSpecimenDescriptionSequenceLists;
+				int nSpecimenDescriptionSequenceItems=aSpecimenDescriptionSequence->getLists(&aSpecimenDescriptionSequenceLists);
+				for (int i=0; i<nSpecimenDescriptionSequenceItems; ++i) {
+				AttributeList *SpecimenDescriptionSequenceItemList = aSpecimenDescriptionSequenceLists[i];
+				if (SpecimenDescriptionSequenceItemList) {
+					Attribute *aSpecimenUID=(*SpecimenDescriptionSequenceItemList)[TagFromName(SpecimenUID)];
+					char *vSpecimenUID=AttributeValue(aSpecimenUID,"");
+					if (strlen(vSpecimenUID) > 0) {
+//cerr << "Checking SpecimenUID " << vSpecimenUID << endl;
+						if (strcmp(vSpecimenUID,vSOPInstanceUID) == 0) {
+							if (newformat) {
+								log << EMsgDCF(MMsgDC(SpecimenUIDHasSameValueAsSOPInstanceUID),aSpecimenUID)
+								<< " = <" << vSpecimenUID << ">"
+								<< endl;
+							}
+							else {
+								log << EMsgDC(SpecimenUIDHasSameValueAsSOPInstanceUID)
+								<< " <" << vSpecimenUID << ">"
+								<< endl;
+							}
+						}
+						if (strcmp(vSpecimenUID,vSeriesInstanceUID) == 0) {
+							if (newformat) {
+								log << EMsgDCF(MMsgDC(SpecimenUIDHasSameValueAsSeriesInstanceUID),aSpecimenUID)
+								<< " = <" << vSpecimenUID << ">"
+								<< endl;
+							}
+							else {
+								log << EMsgDC(SpecimenUIDHasSameValueAsSeriesInstanceUID)
+								<< " <" << vSpecimenUID << ">"
+								<< endl;
+							}
+						}
+						if (strcmp(vSpecimenUID,vStudyInstanceUID) == 0) {
+							if (newformat) {
+								log << EMsgDCF(MMsgDC(SpecimenUIDHasSameValueAsStudyInstanceUID),aSpecimenUID)
+								<< " = <" << vSpecimenUID << ">"
+								<< endl;
+							}
+							else {
+								log << EMsgDC(SpecimenUIDHasSameValueAsStudyInstanceUID)
+								<< " <" << vSpecimenUID << ">"
+								<< endl;
+							}
+						}
+						if (strcmp(vSpecimenUID,vFrameOfReferenceUID) == 0) {
+							if (newformat) {
+								log << EMsgDCF(MMsgDC(SpecimenUIDHasSameValueAsFrameOfReferenceUID),aSpecimenUID)
+								<< " = <" << vSpecimenUID << ">"
+								<< endl;
+							}
+							else {
+								log << EMsgDC(SpecimenUIDHasSameValueAsFrameOfReferenceUID)
+								<< " <" << vSpecimenUID << ">"
+								<< endl;
+							}
+						}
+					}
+					delete[] vSpecimenUID;
+				}
+			}
+		}
+	}
+	
+
+	delete[] vSOPInstanceUID;
+	delete[] vSeriesInstanceUID;
+	delete[] vStudyInstanceUID;
+	delete[] vFrameOfReferenceUID;
+
+	return success;
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -2874,6 +3046,8 @@ main(int argc, char *argv[])
 	if (!checkReferencedSegmentNumbersHaveTarget(list,verbose,newformat,log)) success = false;
 	
 	if (!checkConsistencyOfTiledImageGeometry(list,verbose,newformat,log)) success = false;
+	
+	if (!checkUIDsAreNotReusedForDifferentEntities(list,verbose,newformat,log)) success = false;
 
 	if (!list.validatePrivate(verbose,newformat,log)) success = false;
 	

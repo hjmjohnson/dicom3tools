@@ -1,4 +1,4 @@
-/* attrtypo.h Copyright (c) 1993-2021, David A. Clunie DBA PixelMed Publishing. All rights reserved. */
+/* attrtypo.h Copyright (c) 1993-2022, David A. Clunie DBA PixelMed Publishing. All rights reserved. */
 #ifndef __Header_attrtypo__
 #define __Header_attrtypo__
 

@@ -25,6 +25,9 @@ CompositeIOD="EnhancedUltrasoundVolume"			Condition="EnhancedUltrasoundVolumeIns
 		Module="GeneralEquipment"								Usage="M"
 		Module="EnhancedGeneralEquipment"						Usage="M"
 	InformationEntityEnd
+	InformationEntity="Acquisition"
+		Module="GeneralAcquisition"								Usage="M"
+	InformationEntityEnd
 	InformationEntity="Image"
 		Module="GeneralImage"									Usage="M"
 		Module="GeneralReference"								Usage="U"	Condition="NeedModuleGeneralReference"
@@ -79,6 +82,9 @@ CompositeIOD="EnhancedUltrasoundVolumeQTUS"			Condition="EnhancedUltrasoundVolum
 		Module="GeneralEquipment"								Usage="M"
 		Module="EnhancedGeneralEquipment"						Usage="M"
 		Module="QTUSEnhancedUltrasoundVolumeProfileEquipment"	Usage="M"
+	InformationEntityEnd
+	InformationEntity="Acquisition"
+		Module="GeneralAcquisition"								Usage="M"
 	InformationEntityEnd
 	InformationEntity="Image"
 		Module="GeneralImage"									Usage="M"

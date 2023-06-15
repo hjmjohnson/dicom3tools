@@ -232,6 +232,10 @@ Condition="BlendingSoftcopyPresentationStateInstance"
 	Element="SOPClassUID"		StringConstantFromRootAttribute="BlendingSoftcopyPresentationStateStorageSOPClassUID"
 ConditionEnd
 
+Condition="AdvancedBlendingSoftcopyPresentationStateInstance"
+	Element="SOPClassUID"		StringConstantFromRootAttribute="AdvancedBlendingSoftcopyPresentationStateStorageSOPClassUID"
+ConditionEnd
+
 Condition="IsForProcessingSOPClass"
 	Element="SOPClassUID"		StringConstantFromRootAttribute="DigitalXRayImageStorageForProcessingSOPClassUID"
 	Element="SOPClassUID"		StringConstantFromRootAttribute="DigitalMammographyXRayImageStorageForProcessingSOPClassUID"
@@ -1833,6 +1837,16 @@ Condition="NeedIsocenterToCompensatorDistance"
 	Element="CompensatorMountingPosition"		Operator="And" StringValue="DOUBLE_SIDED"
 ConditionEnd
 
+Condition="MaterialIDNotEmpty"
+	Element="MaterialID"				ElementPresent=""
+	Element="MaterialID"				Operator="And" ValuePresent=""
+ConditionEnd
+
+Condition="MaterialIDEmptyOrAbsent"
+	Element="MaterialID"				Modifier="Not"	ElementPresent=""
+	Element="MaterialID"				Operator="Or"	Modifier="Not"	ValuePresent=""
+ConditionEnd
+
 Condition="NumberOfBoliNotZero"
 	Element="NumberOfBoli"			ElementPresent=""
 	Element="NumberOfBoli"			Operator="And" BinaryValue="> 0"
@@ -2301,6 +2315,10 @@ ConditionEnd
 Condition="NeedModuleOverlayActivation"
 	Element="OverlayActivationLayer"	ElementPresent=""
 	Element="CurveActivationLayer"		ElementPresent=""
+ConditionEnd
+
+Condition="NeedModuleDisplayedArea"
+	Element="DisplayedAreaSelectionSequence"	ElementPresent=""
 ConditionEnd
 
 Condition="NeedModuleGraphicAnnotation"
@@ -6976,6 +6994,11 @@ Condition="SpecimenReferenceMacroOKInPerFrameFunctionalGroupSequence"
 	Element="SpecimenReferenceSequence"				Operator="And" ElementPresentInPathFromRootFirstItem="PerFrameFunctionalGroupsSequence"
 ConditionEnd
 
+Condition="MissingPerFrameFunctionalGroupsSequenceForWholeSlideMicroscopy"
+	Element="PlanePositionSlideSequence"			Modifier="Not"	ElementPresentInPathFromRootFirstItem="PerFrameFunctionalGroupsSequence"
+	Element="DimensionOrganizationType"				Operator="And"	Modifier="Not"	ValueSelector="0"	StringValueFromRootAttribute="TILED_FULL"
+ConditionEnd
+
 Condition="NeedPlanePositionSlideMacroInSharedFunctionalGroupSequenceForWholeSlideMicroscopy"
 	Element="PlanePositionSlideSequence"			Modifier="Not"	ElementPresentInPathFromRootFirstItem="PerFrameFunctionalGroupsSequence"
 	Element="DimensionOrganizationType"				Operator="And"	Modifier="Not"	ValueSelector="0"	StringValueFromRootAttribute="TILED_FULL"
@@ -7042,6 +7065,8 @@ Condition="PixelSpacingRequiredInPixelMeasures"
 		Element="VolumetricProperties"									ElementPresentInRoot=""
 		Element="VolumetricProperties"					Operator="And"	Modifier="Not" StringValueFromRootAttribute="DISTORTED"
 		Element="VolumetricProperties"					Operator="And"	Modifier="Not" StringValueFromRootAttribute="SAMPLED"
+		Element="ImageType"								Operator="And"	Modifier="Not" ValueSelector="2" StringValueFromRootAttribute="LABEL"
+		Element="ImageType"								Operator="And"	Modifier="Not" ValueSelector="2" StringValueFromRootAttribute="OVERVIEW"
 	) Operator="Or"
 	(
 		Element="SOPClassUID"											StringConstantFromRootAttribute="SegmentationStorageSOPClassUID"
@@ -7060,6 +7085,10 @@ Condition="SliceThicknessRequiredInPixelMeasures"
 		(
 			Element="VolumetricProperties"								StringValueFromRootAttribute="VOLUME"
 			Element="VolumetricProperties"								StringValueFromRootAttribute="SAMPLED"
+		) Operator="And"
+		(
+			Element="ImageType"											Modifier="Not" ValueSelector="2" StringValueFromRootAttribute="LABEL"
+			Element="ImageType"							Operator="And"	Modifier="Not" ValueSelector="2" StringValueFromRootAttribute="OVERVIEW"
 		) Operator="And"
 	) Operator="Or"
 	(
@@ -7137,6 +7166,10 @@ ConditionEnd
 
 Condition="DoubleFloatPixelPaddingValuePresent"
 	Element="DoubleFloatPixelPaddingValue"	ElementPresent=""
+ConditionEnd
+
+Condition="ImageTypeValue3IsVolume"
+	Element="ImageType"				ValueSelector="2" StringValueFromRootAttribute="VOLUME"
 ConditionEnd
 
 Condition="ImageTypeValue3IsTissueIntensity"
@@ -8095,3 +8128,40 @@ Condition="GraphicTypeIsPOLYLINEOrPOLYGON"
 	Element="GraphicType"			StringValue="POLYLINE"
 	Element="GraphicType"			StringValue="POLYGON"
 ConditionEnd
+
+Condition="NeedImageOrientationSlide"
+	Element="DimensionOrganizationType"		StringValue="TILED_FULL"
+	(
+		Element="PlanePositionSlideSequence"					  ElementPresentInPathFromRootFirstItem="PerFrameFunctionalGroupsSequence"
+		Element="PlanePositionSlideSequence"		Operator="Or" ElementPresentInPathFromRoot="SharedFunctionalGroupsSequence"
+	) Operator="Or"
+ConditionEnd
+
+Condition="NeedModuleMultiResolutionPyramid"
+	Element="PyramidUID"	ElementPresent=""
+	Element="PyramidLabel"	ElementPresent=""
+	Element="PyramidDescription"	ElementPresent=""
+ConditionEnd
+
+Condition="NeedModuleMicroscopeSlideLayerTileOrganizationInSegmentationOrParametricMap"
+	Element="DimensionOrganizationType"			StringValue="TILED_FULL"
+	Element="TotalPixelMatrixColumns"			ElementPresent=""
+	Element="TotalPixelMatrixRows"				ElementPresent=""
+	Element="TotalPixelMatrixFocalPlanes"		ElementPresent=""
+	Element="TotalPixelMatrixOriginSequence"	ElementPresent=""
+	Element="ImageOrientationSlide"				ElementPresent=""
+ConditionEnd
+
+Condition="NeedModuleGeneralAcquisitionInSegmentationOrParametricMap"
+	Element="AcquisitionNumber"		ElementPresent=""
+	Element="AcquisitionDate"		ElementPresent=""
+	Element="AcquisitionTime"		ElementPresent=""
+	Element="AcquisitionDateTime"	ElementPresent=""
+	Element="ImagesInAcquisition"	ElementPresent=""
+	Element="IrradiationEventUID"	ElementPresent=""
+ConditionEnd
+
+Condition="BlendingModeIsForeground"
+	Element="BlendingMode"			StringValue="FOREGROUND"
+ConditionEnd
+

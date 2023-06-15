@@ -936,6 +936,9 @@
 (2001,0075) VERS=""		VR="DS"   VM="1"	Owner="Philips Imaging DD 001"		Keyword="?"								Name="?"
 (2001,0076) VERS=""		VR="UL"   VM="1"	Owner="PHILIPS IMAGING DD 001"		Keyword="NumberOfFrames"				Name="Number of Frames"
 (2001,0076) VERS=""		VR="UL"   VM="1"	Owner="Philips Imaging DD 001"		Keyword="NumberOfFrames"				Name="Number of Frames"
+
+(2001,0076) VERS=""		VR="UI"   VM="1"	Owner="Philips Imaging DD 002"		Keyword="?"								Name="?"
+
 (2001,0077) VERS=""		VR="CS"   VM="1"	Owner="PHILIPS IMAGING DD 001"		Keyword="GLTrafoType"					Name="GL Transform Type"
 (2001,0077) VERS=""		VR="CS"   VM="1"	Owner="Philips Imaging DD 001"		Keyword="GLTrafoType"					Name="GL Transform Type"
 (2001,007a) VERS=""		VR="FL"   VM="1"	Owner="PHILIPS IMAGING DD 001"		Keyword="WindowRoundingFactor"			Name="Window Rounding Factor"

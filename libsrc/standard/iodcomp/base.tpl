@@ -19,6 +19,10 @@ CompositeIOD="CRImage"			Condition="CRImageInstance"
 	InformationEntity="Equipment"
 		Module="GeneralEquipment"			Usage="M"
 	InformationEntityEnd
+	InformationEntity="Acquisition"
+		Module="GeneralAcquisition"			Usage="M"
+	InformationEntityEnd
+	InformationEntityEnd
 	InformationEntity="Image"
 		Module="GeneralImage"				Usage="M"
 		Module="GeneralReference"			Usage="U"	Condition="NeedModuleGeneralReference"
@@ -59,6 +63,9 @@ CompositeIOD="CTImage"			Condition="CTImageInstance"
 	InformationEntityEnd
 	InformationEntity="Equipment"
 		Module="GeneralEquipment"			Usage="M"
+	InformationEntityEnd
+	InformationEntity="Acquisition"
+		Module="GeneralAcquisition"			Usage="M"
 	InformationEntityEnd
 	InformationEntity="Image"
 		Module="GeneralImage"				Usage="M"
@@ -101,6 +108,9 @@ CompositeIOD="MRImage"			Condition="MRImageInstance"
 	InformationEntity="Equipment"
 		Module="GeneralEquipment"			Usage="M"
 	InformationEntityEnd
+	InformationEntity="Acquisition"
+		Module="GeneralAcquisition"			Usage="M"
+	InformationEntityEnd
 	InformationEntity="Image"
 		Module="GeneralImage"				Usage="M"
 		Module="GeneralReference"			Usage="U"	Condition="NeedModuleGeneralReference"
@@ -141,6 +151,9 @@ CompositeIOD="NMImage"			Condition="NMImageInstance"
 	InformationEntityEnd
 	InformationEntity="Equipment"
 		Module="GeneralEquipment"			Usage="M"
+	InformationEntityEnd
+	InformationEntity="Acquisition"
+		Module="GeneralAcquisition"			Usage="M"
 	InformationEntityEnd
 	InformationEntity="Image"
 		Module="GeneralImage"				Usage="M"
@@ -193,6 +206,9 @@ CompositeIOD="USImage"			Condition="USImageInstance"
 	InformationEntity="Equipment"
 		Module="GeneralEquipment"			Usage="M"
 	InformationEntityEnd
+	InformationEntity="Acquisition"
+		Module="GeneralAcquisition"			Usage="M"
+	InformationEntityEnd
 	InformationEntity="Image"
 		Module="GeneralImage"				Usage="M"
 		Module="GeneralReference"			Usage="U"	Condition="NeedModuleGeneralReference"
@@ -235,6 +251,9 @@ CompositeIOD="USMultiFrameImage"	Condition="USMultiFrameImageInstance"
 	InformationEntityEnd
 	InformationEntity="Equipment"
 		Module="GeneralEquipment"			Usage="M"
+	InformationEntityEnd
+	InformationEntity="Acquisition"
+		Module="GeneralAcquisition"			Usage="M"
 	InformationEntityEnd
 	InformationEntity="Image"
 		Module="GeneralImage"				Usage="M"
@@ -280,6 +299,9 @@ CompositeIOD="SCImage"			Condition="SCImageInstance"
 		Module="GeneralEquipment"			Usage="U"	Condition="NeedModuleGeneralEquipment"
 		Module="SCEquipment"				Usage="M"
 	InformationEntityEnd
+	InformationEntity="Acquisition"
+		Module="GeneralAcquisition"			Usage="M"
+	InformationEntityEnd
 	InformationEntity="Image"
 		Module="GeneralImage"				Usage="M"
 		Module="GeneralReference"			Usage="U"	Condition="NeedModuleGeneralReference"
@@ -317,6 +339,9 @@ CompositeIOD="MultiframeSingleBitSCImage"			Condition="MultiframeSingleBitSCImag
 	InformationEntity="Equipment"
 		Module="GeneralEquipment"					Usage="U"	Condition="NeedModuleGeneralEquipment"
 		Module="SCEquipment"						Usage="M"
+	InformationEntityEnd
+	InformationEntity="Acquisition"
+		Module="GeneralAcquisition"					Usage="M"
 	InformationEntityEnd
 	InformationEntity="Image"
 		Module="GeneralImage"						Usage="M"
@@ -362,6 +387,9 @@ CompositeIOD="MultiframeGrayscaleByteSCImage"			Condition="MultiframeGrayscaleBy
 	InformationEntity="Equipment"
 		Module="GeneralEquipment"						Usage="U"	Condition="NeedModuleGeneralEquipment"
 		Module="SCEquipment"							Usage="M"
+	InformationEntityEnd
+	InformationEntity="Acquisition"
+		Module="GeneralAcquisition"						Usage="M"
 	InformationEntityEnd
 	InformationEntity="Image"
 		Module="GeneralImage"							Usage="M"
@@ -412,6 +440,9 @@ CompositeIOD="MultiframeGrayscaleWordSCImage"			Condition="MultiframeGrayscaleWo
 		Module="GeneralEquipment"						Usage="U"	Condition="NeedModuleGeneralEquipment"
 		Module="SCEquipment"							Usage="M"
 	InformationEntityEnd
+	InformationEntity="Acquisition"
+		Module="GeneralAcquisition"						Usage="M"
+	InformationEntityEnd
 	InformationEntity="Image"
 		Module="GeneralImage"							Usage="M"
 		Module="GeneralReference"						Usage="U"	Condition="NeedModuleGeneralReference"
@@ -460,6 +491,9 @@ CompositeIOD="MultiframeTrueColorSCImage"				Condition="MultiframeTrueColorSCIma
 	InformationEntity="Equipment"
 		Module="GeneralEquipment"						Usage="U"	Condition="NeedModuleGeneralEquipment"
 		Module="SCEquipment"							Usage="M"
+	InformationEntityEnd
+	InformationEntity="Acquisition"
+		Module="GeneralAcquisition"						Usage="M"
 	InformationEntityEnd
 	InformationEntity="Image"
 		Module="GeneralImage"							Usage="M"
@@ -619,9 +653,16 @@ CompositeIOD="Segmentation"				Condition="SegmentationInstance"
 		Module="GeneralEquipment"						Usage="M"
 		Module="EnhancedGeneralEquipment"				Usage="M"
 	InformationEntityEnd
+	InformationEntity="Acquisition"
+		Module="GeneralAcquisition"						Usage="U"	Condition="NeedModuleGeneralAcquisitionInSegmentationOrParametricMap"
+	InformationEntityEnd
+	InformationEntity="MultiResolutionPyramid"
+		Module="MultiResolutionPyramid"					Usage="U"	Condition="NeedModuleMultiResolutionPyramid"
+	InformationEntityEnd
 	InformationEntity="Image"
 		Module="GeneralImage"									Usage="M"
 		Module="GeneralReference"								Usage="U"	Condition="NeedModuleGeneralReference"
+		Module="MicroscopeSlideLayerTileOrganization"			Usage="C"	Condition="NeedModuleMicroscopeSlideLayerTileOrganizationInSegmentationOrParametricMap"
 		Module="ImagePixel"										Usage="M"
 		Module="SegmentationImage"								Usage="M"
 		Module="MultiFrameFunctionalGroupsCommon"				Usage="M"
@@ -953,9 +994,16 @@ CompositeIOD="ParametricMap" Condition="ParametricMapInstance"
 		Module="GeneralEquipment"										Usage="M"
 		Module="EnhancedGeneralEquipment"								Usage="M"
 	InformationEntityEnd
+	InformationEntity="Acquisition"
+		Module="GeneralAcquisition"										Usage="U"	Condition="NeedModuleGeneralAcquisitionInSegmentationOrParametricMap"
+	InformationEntityEnd
+	InformationEntity="MultiResolutionPyramid"
+		Module="MultiResolutionPyramid"									Usage="U"	Condition="NeedModuleMultiResolutionPyramid"
+	InformationEntityEnd
 	InformationEntity="Image"
 		Module="GeneralImage"											Usage="M"
 		Module="GeneralReference"										Usage="U"	Condition="NeedModuleGeneralReference"
+		Module="MicroscopeSlideLayerTileOrganization"					Usage="C"	Condition="NeedModuleMicroscopeSlideLayerTileOrganizationInSegmentationOrParametricMap"
 		Module="ImagePixel"												Usage="C"	Condition="PixelDataPresent"
 		Module="FloatingPointImagePixel"								Usage="C"	Condition="FloatPixelDataPresent"
 		Module="DoubleFloatingPointImagePixel"							Usage="C"	Condition="DoubleFloatPixelDataPresent"

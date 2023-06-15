@@ -512,23 +512,39 @@ Module="WholeSlideMicroscopySeries"
 	SequenceEnd
 ModuleEnd
 
+Module="MultiResolutionPyramid"
+	Name="PyramidUID"									Type="1"
+	Name="PyramidLabel"									Type="3"
+	Name="PyramidDescription"							Type="3"
+ModuleEnd
+
+Module="MicroscopeSlideLayerTileOrganization"
+	Name="TotalPixelMatrixColumns"						Type="1"	NotZeroError=""
+	Name="TotalPixelMatrixRows"							Type="1"	NotZeroError=""
+	Name="TotalPixelMatrixFocalPlanes"					Type="1C"	Condition="DimensionOrganizationTypeIsTILED_FULL"	mbpo="true"
+	Verify="TotalPixelMatrixFocalPlanes"							NotZeroError=""
+	Sequence="TotalPixelMatrixOriginSequence"			Type="1"	VM="1"
+		Name="XOffsetInSlideCoordinateSystem"			Type="1"
+		Name="YOffsetInSlideCoordinateSystem"			Type="1"
+		Name="ZOffsetInSlideCoordinateSystem"			Type="1C"	NoCondition=""	mbpo="true"
+	SequenceEnd
+	Name="ImageOrientationSlide"						Type="1C"	Condition="NeedImageOrientationSlide"
+ModuleEnd
+
 Module="WholeSlideMicroscopyImage"
 	Name="ImageType"									Type="1"	VM="4"
 	Verify="ImageType"									Type="1"	ValueSelector="0"	StringEnumValues="WholeSlideImageType1"
 	Verify="ImageType"									Type="1"	ValueSelector="1"	StringEnumValues="CommonEnhancedImageAndFrameType2"
 	Verify="ImageType"									Type="1"	ValueSelector="2"	StringDefinedTerms="WholeSlideImageType3"
 	Verify="ImageType"									Type="1"	ValueSelector="3"	StringDefinedTerms="WholeSlideImageType4"
-	Name="ImagedVolumeWidth"							Type="1"	NotZeroError=""
-	Name="ImagedVolumeHeight"							Type="1"	NotZeroError=""
-	Name="ImagedVolumeDepth"							Type="1"	NotZeroError=""
-	Name="TotalPixelMatrixColumns"						Type="1"	NotZeroError=""
-	Name="TotalPixelMatrixRows"							Type="1"	NotZeroError=""
-	Name="TotalPixelMatrixFocalPlanes"					Type="1C"	Condition="DimensionOrganizationTypeIsTILED_FULL"	mbpo="true"	NotZeroError=""
-	Sequence="TotalPixelMatrixOriginSequence"			Type="1"	VM="1"
-		Name="XOffsetInSlideCoordinateSystem"			Type="1"
-		Name="YOffsetInSlideCoordinateSystem"			Type="1"
-	SequenceEnd
-	Name="ImageOrientationSlide"						Type="1"
+
+	Name="ImagedVolumeWidth"							Type="1C"	Condition="ImageTypeValue3IsVolume"	mbpo="true"
+	Verify="ImagedVolumeWidth"										NotZeroError=""
+	Name="ImagedVolumeHeight"							Type="1C"	Condition="ImageTypeValue3IsVolume"	mbpo="true"
+	Verify="ImagedVolumeHeight"										NotZeroError=""
+	Name="ImagedVolumeDepth"							Type="1C"	Condition="ImageTypeValue3IsVolume"	mbpo="true"
+	Verify="ImagedVolumeDepth"										NotZeroError=""
+
 	Name="SamplesPerPixel"								Type="1"	BinaryEnumValues="SamplesPerPixelIsOneOrThree"
 	Verify="SamplesPerPixel"										Condition="PhotometricInterpretationNeedsOneSample"	BinaryEnumValues="One"
 	Verify="SamplesPerPixel"										Condition="PhotometricInterpretationNeedsThreeSamples"	BinaryEnumValues="Three"
@@ -673,6 +689,8 @@ Module="MultiFrameFunctionalGroupsForWholeSlideMicroscopy"
 		InvokeMacro="OpticalPathIdentificationMacro"	Condition="NeedOpticalPathIdentificationMacroInPerFrameFunctionalGroupSequenceForWholeSlideMicroscopy"
 		InvokeMacro="SpecimenReferenceMacro"			Condition="SpecimenReferenceMacroOKInPerFrameFunctionalGroupSequence"
 	SequenceEnd
+
+	Verify="PerFrameFunctionalGroupsSequence" 			Condition="MissingPerFrameFunctionalGroupsSequenceForWholeSlideMicroscopy"	ThenErrorMessage="Required unless DimensionOrganizationType is TILED_FULL"
 ModuleEnd
 
 Module="LensometryMeasurementsSeries"

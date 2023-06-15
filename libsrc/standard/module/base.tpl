@@ -343,25 +343,23 @@ DefineMacro="ContentIdentificationMacro" InformationEntity="Instance"
 			InvokeMacro="CodeSequenceMacro"
 		SequenceEnd
 	SequenceEnd
-	Name="ContentCreatorName"									Type="2"
-	Sequence="ContentCreatorIdentificationCodeSequence"			Type="3"	VM="1"
-		InvokeMacro="PersonIdentificationMacro"
-	SequenceEnd
+	InvokeMacro="ContentCreatorMacro"
 MacroEnd
 
-DefineMacro="EnhancedContentIdentificationMacro"
+DefineMacro="EnhancedContentIdentificationMacro" InformationEntity="Instance"
 	Name="UserContentLabel"										Type="1"
 	Name="ContentDescription"									Type="2"
-	Name="ContentCreatorName"									Type="2"
-	Sequence="ContentCreatorIdentificationCodeSequence"			Type="3"	VM="1"
-		InvokeMacro="PersonIdentificationMacro"
-	SequenceEnd
+	InvokeMacro="ContentCreatorMacro"
 MacroEnd
 
-DefineMacro="ExtendedContentIdentificationMacro"
+DefineMacro="ExtendedContentIdentificationMacro" InformationEntity="Instance"
 	Name="UserContentLongLabel"									Type="1"
 	Name="ContentDescription"									Type="2"
-	Name="ContentCreatorName"									Type="2"
+	InvokeMacro="ContentCreatorMacro"
+MacroEnd
+
+DefineMacro="ContentCreatorMacro" InformationEntity="Instance"
+	Name="ContentCreatorName"									Type="3"
 	Sequence="ContentCreatorIdentificationCodeSequence"			Type="3"	VM="1"
 		InvokeMacro="PersonIdentificationMacro"
 	SequenceEnd
@@ -980,6 +978,9 @@ ModuleEnd
 Module="ClinicalTrialStudy"
 	Name="ClinicalTrialTimePointID"					Type="2"
 	Name="ClinicalTrialTimePointDescription"		Type="3"
+	Sequence="ClinicalTrialTimePointTypeCodeSequence"	Type="3"	VM="1-n"
+		InvokeMacro="CodeSequenceMacro"
+	SequenceEnd
 	Name="LongitudinalTemporalOffsetFromEvent"		Type="3"
 	Name="LongitudinalTemporalEventType"			Type="1C"	Condition="LongitudinalTemporalOffsetFromEventIsPresent"	StringDefinedTerms="LongitudinalTemporalEventType"
 	Sequence="ConsentForClinicalTrialUseSequence"	Type="3"	VM="1-n"
@@ -1119,6 +1120,16 @@ Module="GeneralReference"
 	SequenceEnd
 ModuleEnd
 
+Module="GeneralAcquisition"
+	Name="AcquisitionUID"									Type="3"
+	Name="AcquisitionNumber"								Type="3"
+	Name="AcquisitionDate"									Type="3"
+	Name="AcquisitionTime"									Type="3"
+	Name="AcquisitionDateTime"								Type="3"
+	Name="ImagesInAcquisition"								Type="3"
+	Name="IrradiationEventUID"								Type="3"
+ModuleEnd
+
 Module="GeneralImage"
 	Name="InstanceNumber"									Type="2"
 	Name="PatientOrientation"								Type="2C"	Condition="PatientOrientationRequired" mbpo="true"
@@ -1127,11 +1138,6 @@ Module="GeneralImage"
 	Name="ContentTime"										Type="2C"	NoCondition=""	# "if temporally related" ... real world
 	Name="ImageType"										Type="3"	ValueSelector="0"	StringEnumValues="ImageType1"
 	Verify="ImageType"										Type="3"	ValueSelector="1"	StringEnumValues="ImageType2"
-	Name="AcquisitionNumber"								Type="3"
-	Name="AcquisitionDate"									Type="3"
-	Name="AcquisitionTime"									Type="3"
-	Name="AcquisitionDateTime"								Type="3"
-	Name="ImagesInAcquisition"								Type="3"
 	Name="ImageComments"									Type="3"
 	Name="QualityControlImage"								Type="3"	StringEnumValues="YesNoFull"
 	Name="BurnedInAnnotation"								Type="3"	StringEnumValues="YesNoFull"
@@ -1147,7 +1153,6 @@ Module="GeneralImage"
 	Verify="PresentationLUTShape"							Condition="PhotometricInterpretationIsMonochrome1"			StringEnumValues="InversePresentationLUTShape"
 	Verify="PresentationLUTShape"							Condition="PhotometricInterpretationIsMonochrome2"			StringEnumValues="IdentityPresentationLUTShape"
 	Verify="PresentationLUTShape"							Condition="PhotometricInterpretationIsColor"				StringEnumValues="IdentityPresentationLUTShape"
-	Name="IrradiationEventUID"								Type="3"
 	# multienergy condition for RWVM is from IOD not module
 	Sequence="RealWorldValueMappingSequence"				Type="1C"	VM="1-n"	Condition="IsMultienergyCTAcquisition"	mbpo="true"
 		InvokeMacro="RealWorldValueMappingItemMacro"
@@ -1449,9 +1454,12 @@ ModuleEnd
 
 DefineMacro="PixelMeasuresMacro" InformationEntity="FunctionalGroup"
 	Sequence="PixelMeasuresSequence"		Type="1"	VM="1"
-		Name="PixelSpacing"					Type="1C"	NotZeroError=""	Condition="PixelSpacingRequiredInPixelMeasures" mbpo="true"
-		Name="SliceThickness"				Type="1C"	NotZeroError=""	Condition="SliceThicknessRequiredInPixelMeasures" mbpo="true"
-		Name="SpacingBetweenSlices"			Type="1C"	NotZeroError="" Condition="DimensionOrganizationTypeIsTILED_FULLAndTotalPixelMatrixFocalPlanesGreaterThanOne" mbpo="true"
+		Name="PixelSpacing"					Type="1C"					Condition="PixelSpacingRequiredInPixelMeasures" mbpo="true"
+		Verify="PixelSpacing"							NotZeroError=""
+		Name="SliceThickness"				Type="1C"					Condition="SliceThicknessRequiredInPixelMeasures" mbpo="true"
+		Verify="SliceThickness"							NotZeroError=""
+		Name="SpacingBetweenSlices"			Type="1C"					Condition="DimensionOrganizationTypeIsTILED_FULLAndTotalPixelMatrixFocalPlanesGreaterThanOne" mbpo="true"
+		Verify="SpacingBetweenSlices"					NotZeroError=""
 		Verify="SpacingBetweenSlices"									Condition="SpacingBetweenSlicesIsNegative"	ThenErrorMessage="Not permitted to be negative" ShowValueWithMessage="true"
 	SequenceEnd
 MacroEnd
@@ -1801,8 +1809,8 @@ Module="CTImage"
 	Name="HighBit"						Type="1"	BinaryEnumValues="BitsAre11To15"
 	Name="RescaleIntercept"				Type="1"
 	Name="RescaleSlope"					Type="1"	NotZeroError=""
-	Name="RescaleType"					Type="1C"	Condition="MultienergyAcquisitionOrRescaleTypeIsPresentAndNotHU"	StringDefinedTerms="RescaleTypeHounsfieldUnits" mbpo="true"
-	Verify="RescaleType"							Condition="RescaleTypeIsPresentAndNotHUAndImageIsOriginalNotLocalizerAndNotMultienergyAcquisition" ThenErrorMessage="If RescaleType is present and not multi-energy acquisition, must be HU for ORIGINAL non-LOCALIZER images"
+	Name="RescaleType"					Type="1C"	Condition="MultienergyAcquisitionOrRescaleTypeIsPresentAndNotHU"	StringDefinedTerms="RescaleTypeCTImage" mbpo="true"
+	Verify="RescaleType"							Condition="RescaleTypeIsPresentAndNotHUAndImageIsOriginalNotLocalizerAndNotMultienergyAcquisition" ThenWarningMessage="If RescaleType is present and not multi-energy acquisition, should be HU for ORIGINAL non-LOCALIZER images"
 	Verify="RescaleType"							Condition="RescaleTypeIsPresentAndIsHUAndImageIsOriginalLocalizerAndNotMultienergyAcquisition"   ThenWarningMessage="If RescaleType is present and not multi-energy acquisition, should not be HU for ORIGINAL LOCALIZER images"
 	Name="KVP"							Type="2"	NotZeroWarning=""
 	Verify="KVP"									Condition="KVPNotEmptyWhenAlsoPresentInMultienergyCTAcquisitionSequence" ThenErrorMessage="Attribute shall be empty within Module <CTImage> when also present in MultienergyCTAcquisitionSequence"
@@ -2765,7 +2773,7 @@ Module="SegmentationImage"
 	Sequence="SegmentSequence"								Type="1"	VM="1-n"
 		InvokeMacro="SegmentDescriptionMacro"
 		Name="SegmentAlgorithmName"							Type="1C"	Condition="SegmentAlgorithmTypeIsNotManual"
-		Sequence="SegmentationAlgorithmIdentificationSequence"	Type="3"	VM="1"
+		Sequence="SegmentationAlgorithmIdentificationSequence"	Type="3"	VM="1-n"
 			InvokeMacro="AlgorithmIdentificationMacro"									BaselineContextID="7162"
 		SequenceEnd
 		Name="RecommendedDisplayGrayscaleValue"				Type="3"
@@ -2794,6 +2802,7 @@ DefineMacro="SegmentDescriptionMacro" InformationEntity="Instance"
 		InvokeMacro="SOPInstanceReferenceMacro"
 		Name="ReferencedROINumber"								Type="1C"	Condition="ReferencedSOPClassUIDIsRTStructureSetStorage"
 	SequenceEnd
+	InvokeMacro="ContentCreatorMacro"
 MacroEnd
 
 DefineMacro="SegmentationMacro" InformationEntity="FunctionalGroup"
@@ -2811,7 +2820,7 @@ Module="SurfaceSegmentation"
 		Name="SurfaceCount"														Type="1"	NotZeroError="" 
 		Sequence="ReferencedSurfaceSequence"									Type="1"	VM="1-n"				# should check that number of items equals SurfaceCount :(
 			Name="ReferencedSurfaceNumber"										Type="1"	VM="1" 	NotZeroError=""	# should check that SurfaceNumber exists in SurfaceSequence :(
-			Sequence="SegmentSurfaceGenerationAlgorithmIdentificationSequence"	Type="1"	VM="1"
+			Sequence="SegmentSurfaceGenerationAlgorithmIdentificationSequence"	Type="1"	VM="1-n"
 				InvokeMacro="AlgorithmIdentificationMacro"									BaselineContextID="7162"
 			SequenceEnd
 			Sequence="SegmentSurfaceSourceInstanceSequence"						Type="2"	VM="0-n"

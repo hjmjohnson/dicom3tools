@@ -1,4 +1,4 @@
-/* attr.h Copyright (c) 1993-2021, David A. Clunie DBA PixelMed Publishing. All rights reserved. */
+/* attr.h Copyright (c) 1993-2022, David A. Clunie DBA PixelMed Publishing. All rights reserved. */
 // public interface for Attribute class
 
 #ifndef __Header_attr__

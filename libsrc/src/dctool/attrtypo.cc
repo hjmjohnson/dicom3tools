@@ -1,4 +1,4 @@
-static const char *CopyrightIdentifier(void) { return "@(#)attrtypo.cc Copyright (c) 1993-2021, David A. Clunie DBA PixelMed Publishing. All rights reserved."; }
+static const char *CopyrightIdentifier(void) { return "@(#)attrtypo.cc Copyright (c) 1993-2022, David A. Clunie DBA PixelMed Publishing. All rights reserved."; }
 #include "attr.h"
 #include "attrtypo.h"
 #include "attrtag.h"
@@ -78,7 +78,7 @@ OtherByteSmallNonPixelAttributeBase::read(BinaryInputStream& stream,Uint32 lengt
 {
 	Assert(lengthinbytes == 0);
 	Assert(data == 0);
-	Assert(length%2 == 0);	// DICOM likes even things
+	//Assert(length%2 == 0);	// DICOM likes even things - but should read without failing and complain later
 	data=new unsigned char[length];
 	Assert(data);
 	if (length) stream.read((char *)data,size_t(length));
@@ -183,7 +183,7 @@ OtherWordSmallNonPixelAttributeBase::read(BinaryInputStream& stream,Uint32 lengt
 {
 	Assert(lengthinbytes == 0);
 	Assert(data == 0);
-	Assert(length%2 == 0);	// DICOM likes even things
+	//Assert(length%2 == 0);	// DICOM likes even things - but should read without failing and complain later
 	Uint32 lengthinwords=length/2;
 	if (lengthinwords) {
 		data=new Uint16[lengthinwords];
@@ -695,7 +695,7 @@ UnknownSmallAttributeBase::read(BinaryInputStream& stream,Uint32 length)
 {
 	Assert(lengthinbytes == 0);
 	Assert(data == 0);
-	//Assert(length%2 == 0);	// DICOM likes even things
+	//Assert(length%2 == 0);	// DICOM likes even things - but should read without failing and complain later
 	data=new unsigned char[length];
 	Assert(data);
 	if (length) stream.read((char *)data,size_t(length));
